@@ -35,6 +35,11 @@ export const event = {
       type: 'datetime',
     },
     {
+      name: 'regDeadline',
+      title: 'Registration Deadline',
+      type: 'datetime',
+    },
+    {
       name: 'registrationLink',
       title: 'Registration Link',
       type: 'url',

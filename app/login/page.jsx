@@ -43,13 +43,6 @@ export default function LoginPage() {
           emailRedirectTo: `${location.origin}/auth/callback`,
         },
       });
-    
-      // Insert email into student_test_data table
-      const { data, error } = await supabase
-        .from('student_test_data')
-        .insert([{ email: email, name: userName}])
-        .select();
-    
       if (error) {
         console.error("Error inserting email:", error.message);
         // Handle error as needed
@@ -57,30 +50,34 @@ export default function LoginPage() {
     
       // Update user state, refresh router, and clear form inputs
       setUser(res.data.user);
-      router.refresh();
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setNewUser(false); // Clear the confirm password input
+      setNewUser(false)
+      router.refresh();
     } catch (error) {
-      console.error("Error signing up:", error.message);
+      // alert(error.message);
+      router.refresh();
     }
     
   };
   
   const handleSignIn = async () => {
     try {
-      const res = await supabase.auth.signInWithPassword({
+      const {data,error} = await supabase.auth.signInWithPassword({
         email,
         password,
       });
-      setUser(res.data.user);
-      setEmail("");
-      setPassword("");
-      router.push("/homepage");
+      if(error){
+        alert("Error Signing in: "+error.message)
+      } else {
+        setUser(data.user);
+        setEmail("");
+        setPassword("");
+        router.push("/homepage");
+      }
     } catch (error) {
-      console.error("Error signing in:", error.message);
-      // Display an error message to the user
+      alert("Error signing in:", res.error.message);
       alert("Wrong credentials");
     }
   };
@@ -138,7 +135,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex">
-      <div className="h-screen bg-gray-100 w-1/2 flex items-center justify-center">
+      <div className="h-screen bg-gray-100 w-1/2 hidden md:flex items-center justify-center">
         <div className="flex items-center gap-4 w-max">
             <Image src={logo} height={400} width={400}></Image>
         </div>
@@ -183,13 +180,13 @@ export default function LoginPage() {
           />)}
           {!newUser && (<button
             onClick={handleSignIn}
-            className="w-full px-4 py-3 rounded-md bg-[#FA776C] text-white hover:bg-purple-800 focus:outline-none"
+            className="w-full px-4 py-3 rounded-md bg-secondary text-white hover:bg-primary focus:outline-none"
           >
             Log In
           </button>)}
           {newUser && (<button
             onClick={handleSignUp}
-            className="w-full px-4 py-3 rounded-md bg-green-400 text-white hover:bg-purple-600 focus:outline-none"
+            className="w-full px-4 py-3 rounded-md bg-secondary text-white hover:bg-primary focus:outline-none"
           >
             Sign Up
           </button>)}
@@ -205,10 +202,10 @@ export default function LoginPage() {
             </p>
           )}
           {newUser && (
-            <p className="text-white mt-5">
+            <p className="text-black mt-5">
               Already have an account?{" "}
               <button
-                className="text-green-300"
+                className="text-secondary"
                 onClick={() => setNewUser(false)}
               >
                 Log In
