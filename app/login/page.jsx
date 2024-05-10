@@ -43,21 +43,16 @@ export default function LoginPage() {
           emailRedirectTo: `${location.origin}/auth/callback`,
         },
       });
-      if (error) {
-        console.error("Error inserting email:", error.message);
-        // Handle error as needed
-      }
-    
       // Update user state, refresh router, and clear form inputs
       setUser(res.data.user);
+      router.refresh();
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-      setNewUser(false)
-      router.refresh();
+      setNewUser(false); // Clear the confirm password input
+      handleSignIn()
     } catch (error) {
-      // alert(error.message);
-      router.refresh();
+      console.error("Error signing up:", error.message);
     }
     
   };
@@ -78,7 +73,7 @@ export default function LoginPage() {
       }
     } catch (error) {
       alert("Error signing in:", res.error.message);
-      alert("Wrong credentials");
+      //alert("Wrong credentials");
     }
   };
   
